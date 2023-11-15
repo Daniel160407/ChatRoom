@@ -1,7 +1,9 @@
 package com.example.chatroom.client;
 
 import com.example.chatroom.controllers.HomeController;
+import javafx.application.Platform;
 
+import java.beans.PropertyChangeSupport;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -11,19 +13,20 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 
-public class User extends HomeController {
-    private static String address = "localhost";
-    private static int port = 8080;
-    private String receivedMessage;
+public class Client extends HomeController {
+    private static final String address = "localhost";
+    private static final int port = 8080;
     private final Socket socket = new Socket(address, port);
-    DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
-    DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
+    private final DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
+    private final DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
+    private final HomeController homeController;
 
-    public User() throws IOException {
+    public Client(HomeController homeController) throws IOException {
         Thread send = new Thread(this::send);
         Thread receive = new Thread(this::receive);
         send.start();
         receive.start();
+        this.homeController = homeController;
     }
 
     public void send() {
@@ -33,7 +36,6 @@ public class User extends HomeController {
                 while (true) {
                     System.out.print("");
                     if (inputtedData.getMessage() != null) {
-                        System.out.println("Error2");
                         break;
                     }
                 }
@@ -41,7 +43,6 @@ public class User extends HomeController {
                 inputtedData.setMessage(null);
                 dataOutputStream.writeUTF(message);
                 dataOutputStream.flush();
-                System.out.println("Sent");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -50,8 +51,8 @@ public class User extends HomeController {
 
     public void receive() {
         try {
-
             while (true) {
+                String receivedMessage;
                 try {
                     receivedMessage = dataInputStream.readUTF();
                     AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("src/main/resources/com/example/chatroom/sounds/notification_sound.wav").getAbsoluteFile());
@@ -61,7 +62,7 @@ public class User extends HomeController {
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
-                System.out.println("< " + receivedMessage);
+                Platform.runLater(() -> homeController.receivedMessageDisplay(receivedMessage));
             }
         } catch (Exception e) {
             e.printStackTrace();

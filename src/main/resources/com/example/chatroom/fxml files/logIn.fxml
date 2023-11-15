@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #101828;" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.chatroom.controllers.LogInController">
+    <children>
+        <TextField fx:id="userNameField" layoutX="226.0" layoutY="135.0" onAction="#onUserNameFieldAction" />
+        <Label layoutX="245.0" layoutY="40.0" text="Log In" textFill="WHITE">
+            <font>
+                <Font size="40.0" />
+            </font>
+        </Label>
+        <Label layoutX="144.0" layoutY="137.0" text="User Name:" textFill="WHITE">
+            <font>
+                <Font size="15.0" />
+            </font>
+        </Label>
+      <Label layoutX="331.0" layoutY="160.0" onMouseClicked="#onRegisterMouseClicked" text="Register" textFill="WHITE" underline="true" />
+    </children>
+</AnchorPane>

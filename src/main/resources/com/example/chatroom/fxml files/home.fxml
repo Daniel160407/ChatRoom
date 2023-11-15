@@ -7,10 +7,10 @@
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="733.0" prefWidth="497.0" style="-fx-background-color: #101828;" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.chatroom.controllers.HomeController">
     <children>
         <TextField fx:id="textField" layoutX="93.0" layoutY="688.0" onAction="#onTextFieldAction" prefHeight="25.0" prefWidth="312.0" />
-      <ScrollPane prefHeight="680.0" prefWidth="497.0">
-        <content>
-          <AnchorPane fx:id="mainAnchorPane" minHeight="0.0" minWidth="0.0" prefHeight="682.0" prefWidth="494.0" style="-fx-background-color: #101828;" />
-        </content>
-      </ScrollPane>
+        <ScrollPane prefHeight="680.0" prefWidth="497.0">
+            <content>
+                <AnchorPane fx:id="mainAnchorPane" minHeight="0.0" minWidth="0.0" prefHeight="680.0" prefWidth="482.0" style="-fx-background-color: #101828;" />
+            </content>
+        </ScrollPane>
     </children>
 </AnchorPane>

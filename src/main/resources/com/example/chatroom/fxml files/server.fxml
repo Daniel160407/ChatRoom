@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="461.0" prefWidth="898.0" style="-fx-background-color: #101828;" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.chatroom.controllers.ServerController">
+    <children>
+        <TextField fx:id="port" layoutX="74.0" layoutY="34.0" onAction="#onPortAction" />
+        <Label layoutX="26.0" layoutY="31.0" text="Port:" textFill="WHITE">
+            <font>
+                <Font size="20.0" />
+            </font>
+        </Label>
+        <Label fx:id="serverMessage" layoutX="236.0" layoutY="295.0" textFill="#00ff77">
+            <font>
+                <Font size="15.0" />
+            </font>
+        </Label>
+      <ScrollPane layoutX="300.0" layoutY="14.0" prefHeight="437.0" prefWidth="537.0">
+        <content>
+          <AnchorPane fx:id="mainAnchorPane" minHeight="0.0" minWidth="0.0" prefHeight="436.0" prefWidth="521.0" style="-fx-background-color: #101828;" />
+        </content>
+      </ScrollPane>
+    </children>
+</AnchorPane>
