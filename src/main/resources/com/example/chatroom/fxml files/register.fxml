@@ -7,41 +7,39 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #101828;"
-            xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.example.chatroom.controllers.RegisterController">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #101828;" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.chatroom.controllers.RegisterController">
     <children>
-        <TextField fx:id="emailField" layoutX="226.0" layoutY="135.0" onAction="#onEmailFieldAction"/>
+        <TextField fx:id="emailField" layoutX="226.0" layoutY="135.0" />
         <Label layoutX="123.0" layoutY="40.0" text="Register You Accaunt" textFill="WHITE">
             <font>
-                <Font size="40.0"/>
+                <Font size="40.0" />
             </font>
         </Label>
         <Label layoutX="141.0" layoutY="137.0" text="E-mail:" textFill="WHITE">
             <font>
-                <Font size="15.0"/>
+                <Font size="15.0" />
             </font>
         </Label>
-        <TextField fx:id="passwordField" layoutX="226.0" layoutY="175.0" onAction="#onPasswordFieldAction"/>
+        <TextField fx:id="passwordField" layoutX="226.0" layoutY="175.0" />
         <Label layoutX="141.0" layoutY="177.0" text="Password:" textFill="WHITE">
             <font>
-                <Font size="15.0"/>
+                <Font size="15.0" />
             </font>
         </Label>
         <Label layoutX="136.0" layoutY="215.0" text="User Name:" textFill="WHITE">
             <font>
-                <Font size="15.0"/>
+                <Font size="15.0" />
             </font>
         </Label>
-        <TextField fx:id="userNameField" layoutX="226.0" layoutY="213.0" onAction="#onUserNameFieldAction"/>
-        <Button layoutX="275.0" layoutY="253.0" mnemonicParsing="false" onAction="#onSaveButtonAction"
-                style="-fx-background-radius: 10; -fx-background-color: #43a047;" text="Save" textFill="WHITE">
+        <TextField fx:id="userNameField" layoutX="226.0" layoutY="213.0" />
+        <Button layoutX="275.0" layoutY="253.0" mnemonicParsing="false" onAction="#onSaveButtonAction" style="-fx-background-radius: 10; -fx-background-color: #43a047;" text="Save" textFill="WHITE">
             <font>
-                <Font size="15.0"/>
+                <Font size="15.0" />
             </font>
             <effect>
-                <DropShadow/>
+                <DropShadow />
             </effect>
         </Button>
+      <Label fx:id="errorMessage" layoutX="226.0" layoutY="118.0" textFill="RED" />
     </children>
 </AnchorPane>
