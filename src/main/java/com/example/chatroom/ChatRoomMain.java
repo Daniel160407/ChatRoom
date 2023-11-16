@@ -25,7 +25,7 @@ public class ChatRoomMain extends Application {
         stage.show();
         stage.setOnCloseRequest(event -> {
             try {
-                FileWriter fileWriter = new FileWriter("src/main/resources/com/example/chatroom/txt files/personalData.txt", true);
+                FileWriter fileWriter = new FileWriter("src/main/resources/com/example/chatroom/txt files/personalData.txt");
                 BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
                 for (int i = 0; i < logInController.registeredPeople.data.size(); i++) {
                     for (int j = 0; j < logInController.registeredPeople.data.get(i).size(); j++) {

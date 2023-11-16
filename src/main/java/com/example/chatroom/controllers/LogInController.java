@@ -45,7 +45,27 @@ public class LogInController {
             Client client = new Client(homeController);
             stage.setOnCloseRequest(event -> {
                 try {
-                    FileWriter fileWriter = new FileWriter("src/main/resources/com/example/chatroom/txt files/personalData.txt",true);
+                    BufferedReader bufferedReader = new BufferedReader(new FileReader("src/main/resources/com/example/chatroom/txt files/personalData.txt"));
+                    List<List<String>> fileData = new ArrayList<>();
+                    List<String> data = new ArrayList<>();
+                    String str;
+                    while ((str = bufferedReader.readLine()) != null) {
+                        data.add(str);
+                    }
+                    for (int i = 2; i < data.size(); i += 3) {
+                        List<String> sortedData = new ArrayList<>();
+                        sortedData.add(data.get(i - 2));
+                        sortedData.add(data.get(i - 1));
+                        sortedData.add(data.get(i));
+                        fileData.add(sortedData);
+                    }
+                    for (int i = 0; i < fileData.size(); i++) {
+                        if (!registeredPeople.data.contains(fileData.get(i))) {
+                            registeredPeople.data.add(fileData.get(i));
+                        }
+                    }
+
+                    FileWriter fileWriter = new FileWriter("src/main/resources/com/example/chatroom/txt files/personalData.txt");
                     BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
                     for (int i = 0; i < registeredPeople.data.size(); i++) {
                         for (int j = 0; j < registeredPeople.data.get(i).size(); j++) {
