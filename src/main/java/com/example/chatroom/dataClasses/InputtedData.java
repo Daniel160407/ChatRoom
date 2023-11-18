@@ -4,6 +4,7 @@ public class InputtedData {
     private String message;
     private String Address;
     private int port = 0;
+    private String username;
 
 
     public String getMessage() {
@@ -18,6 +19,10 @@ public class InputtedData {
         return port;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
     public void setMessage(String message) {
         this.message = message;
     }
@@ -28,5 +33,9 @@ public class InputtedData {
 
     public void setPort(int port) {
         this.port = port;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

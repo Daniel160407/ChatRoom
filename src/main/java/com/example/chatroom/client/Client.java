@@ -3,7 +3,6 @@ package com.example.chatroom.client;
 import com.example.chatroom.controllers.HomeController;
 import javafx.application.Platform;
 
-import java.beans.PropertyChangeSupport;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -41,7 +40,7 @@ public class Client extends HomeController {
                 }
                 message = inputtedData.getMessage();
                 inputtedData.setMessage(null);
-                dataOutputStream.writeUTF(message);
+                dataOutputStream.writeUTF(homeController.getInputtedData().getUsername() + ": " + message);
                 dataOutputStream.flush();
             }
         } catch (Exception e) {

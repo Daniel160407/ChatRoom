@@ -24,7 +24,6 @@ public class LogInController {
 
     @FXML
     private void onUserNameFieldAction() throws IOException {
-        System.out.println(registeredPeople.data);
         for (int i = 0; i < registeredPeople.data.size(); i++) {
             if (registeredPeople.data.get(i).get(2).equals(userNameField.getText())) {
                 enterPermission = true;
@@ -42,6 +41,7 @@ public class LogInController {
             stage.setScene(scene);
             stage.show();
             HomeController homeController = fxmlLoader.getController();
+            homeController.getInputtedData().setUsername(userNameField.getText());
             Client client = new Client(homeController);
             stage.setOnCloseRequest(event -> {
                 try {
@@ -64,7 +64,7 @@ public class LogInController {
                             registeredPeople.data.add(fileData.get(i));
                         }
                     }
-
+                    bufferedReader.close();
                     FileWriter fileWriter = new FileWriter("src/main/resources/com/example/chatroom/txt files/personalData.txt");
                     BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
                     for (int i = 0; i < registeredPeople.data.size(); i++) {

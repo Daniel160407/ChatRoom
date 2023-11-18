@@ -19,11 +19,35 @@ public class ChatRoomMain extends Application {
         Scene scene = new Scene(fxmlLoader.load(), 497, 733);
         LogInController logInController = fxmlLoader.getController();
         logInController.logInController = fxmlLoader.getController();
-
         stage.setTitle("Hello!");
         stage.setScene(scene);
         stage.show();
         stage.setOnCloseRequest(event -> {
+            try {
+                BufferedReader bufferedReader = new BufferedReader(new FileReader("src/main/resources/com/example/chatroom/txt files/personalData.txt"));
+
+                List<List<String>> fileData = new ArrayList<>();
+                List<String> data = new ArrayList<>();
+                String str;
+                while ((str = bufferedReader.readLine()) != null) {
+                    data.add(str);
+                }
+                for (int i = 2; i < data.size(); i += 3) {
+                    List<String> sortedData = new ArrayList<>();
+                    sortedData.add(data.get(i - 2));
+                    sortedData.add(data.get(i - 1));
+                    sortedData.add(data.get(i));
+                    fileData.add(sortedData);
+                }
+                for (int i = 0; i < fileData.size(); i++) {
+                    if (!logInController.registeredPeople.data.contains(fileData.get(i))) {
+                        logInController.registeredPeople.data.add(fileData.get(i));
+                    }
+                }
+                bufferedReader.close();
+            }catch (IOException e){
+                e.printStackTrace();
+            }
             try {
                 FileWriter fileWriter = new FileWriter("src/main/resources/com/example/chatroom/txt files/personalData.txt");
                 BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);

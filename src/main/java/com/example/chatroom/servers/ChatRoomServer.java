@@ -63,6 +63,7 @@ public class ChatRoomServer extends ServerController {
 
             while (true) {
                 String message = dataInputStream.readUTF();
+                System.out.println(message);
                 // Send the message to all clients except the sender
                 sendMessageToAllExceptSender(message, socket);
             }
