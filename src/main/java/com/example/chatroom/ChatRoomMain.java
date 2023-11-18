@@ -6,6 +6,7 @@ import com.example.chatroom.controllers.LogInController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.*;
@@ -19,6 +20,7 @@ public class ChatRoomMain extends Application {
         Scene scene = new Scene(fxmlLoader.load(), 497, 733);
         LogInController logInController = fxmlLoader.getController();
         logInController.logInController = fxmlLoader.getController();
+        stage.getIcons().add(new Image("https://cdn.pixabay.com/photo/2021/03/02/12/03/messenger-6062243_1280.png"));
         stage.setTitle("Hello!");
         stage.setScene(scene);
         stage.show();
@@ -45,7 +47,7 @@ public class ChatRoomMain extends Application {
                     }
                 }
                 bufferedReader.close();
-            }catch (IOException e){
+            } catch (IOException e) {
                 e.printStackTrace();
             }
             try {

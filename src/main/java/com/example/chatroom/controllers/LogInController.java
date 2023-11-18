@@ -8,6 +8,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.*;
@@ -17,15 +18,43 @@ import java.util.List;
 public class LogInController {
     @FXML
     private TextField userNameField;
+    @FXML
+    private TextField passwordField;
+
+
     public boolean enterPermission;
     public PersonalData registeredPeople = new PersonalData();
     public RegisterController registerController;
     public LogInController logInController;
 
+
     @FXML
-    private void onUserNameFieldAction() throws IOException {
+    private void onPasswordFieldAction() throws IOException {
+        enterRequest();
+    }
+
+    @FXML
+    private void onLogInButtonAction() throws IOException {
+        enterRequest();
+    }
+
+    @FXML
+    private void onRegisterMouseClicked() throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(ChatRoomMain.class.getResource("fxml files/register.fxml"));
+        Scene scene = new Scene(fxmlLoader.load(), 497, 733);
+        registerController = fxmlLoader.getController();
+        registerController.logInController = logInController;
+        Stage stage = new Stage();
+        stage.getIcons().add(new Image("https://cdn.pixabay.com/photo/2021/03/02/12/03/messenger-6062243_1280.png"));
+        stage.setTitle("Register");
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    private void enterRequest() throws IOException {
         for (int i = 0; i < registeredPeople.data.size(); i++) {
-            if (registeredPeople.data.get(i).get(2).equals(userNameField.getText())) {
+            if (registeredPeople.data.get(i).get(2).equals(userNameField.getText())
+                    && registeredPeople.data.get(i).get(1).equals(passwordField.getText())) {
                 enterPermission = true;
                 break;
             } else {
@@ -37,12 +66,13 @@ public class LogInController {
             FXMLLoader fxmlLoader = new FXMLLoader(ChatRoomMain.class.getResource("fxml files/home.fxml"));
             Scene scene = new Scene(fxmlLoader.load(), 497, 733);
             Stage stage = new Stage();
+            stage.getIcons().add(new Image("https://cdn.pixabay.com/photo/2021/03/02/12/03/messenger-6062243_1280.png"));
             stage.setTitle("ChatRoom");
             stage.setScene(scene);
             stage.show();
             HomeController homeController = fxmlLoader.getController();
-            homeController.getInputtedData().setUsername(userNameField.getText());
             Client client = new Client(homeController);
+            homeController.getInputtedData().setUsername(userNameField.getText());
             stage.setOnCloseRequest(event -> {
                 try {
                     BufferedReader bufferedReader = new BufferedReader(new FileReader("src/main/resources/com/example/chatroom/txt files/personalData.txt"));
@@ -80,17 +110,5 @@ public class LogInController {
                 }
             });
         }
-    }
-
-    @FXML
-    private void onRegisterMouseClicked() throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(ChatRoomMain.class.getResource("fxml files/register.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 497, 733);
-        registerController = fxmlLoader.getController();
-        registerController.logInController = logInController;
-        Stage stage = new Stage();
-        stage.setTitle("Register");
-        stage.setScene(scene);
-        stage.show();
     }
 }

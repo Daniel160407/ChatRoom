@@ -6,6 +6,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.DataInputStream;
@@ -18,6 +19,7 @@ import java.util.List;
 
 public class ChatRoomServer extends ServerController {
     private static final List<Socket> outputStreams = new ArrayList<>();
+    private List<String> onlineUsers = new ArrayList<>();
     private static ServerController serverController;
 
     @Override
@@ -26,6 +28,7 @@ public class ChatRoomServer extends ServerController {
         Parent root = loader.load();
         serverController = loader.getController();
         stage.setTitle("Server");
+        stage.getIcons().add(new Image("https://static-00.iconduck.com/assets.00/server-icon-512x512-06jrsmox.png"));
         Scene scene = new Scene(root, 800, 600);
         stage.setScene(scene);
         stage.show();
