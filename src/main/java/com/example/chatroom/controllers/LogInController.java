@@ -26,6 +26,7 @@ public class LogInController {
     public PersonalData registeredPeople = new PersonalData();
     public RegisterController registerController;
     public LogInController logInController;
+    public Client client;
 
 
     @FXML
@@ -71,8 +72,10 @@ public class LogInController {
             stage.setScene(scene);
             stage.show();
             HomeController homeController = fxmlLoader.getController();
-            Client client = new Client(homeController);
+            client = new Client(homeController);
             homeController.getInputtedData().setUsername(userNameField.getText());
+            client.sendSpecificMessage("#startup#: " + userNameField.getText());
+            homeController.logInController = this.logInController;
             stage.setOnCloseRequest(event -> {
                 try {
                     BufferedReader bufferedReader = new BufferedReader(new FileReader("src/main/resources/com/example/chatroom/txt files/personalData.txt"));
@@ -95,12 +98,25 @@ public class LogInController {
                         }
                     }
                     bufferedReader.close();
+                    System.out.println("Sizes: "+logInController.registeredPeople.data.size());
+                    for (int i = 0; i < logInController.registeredPeople.data.size() - 1; i++) {
+                        for (int j = i + 1; j < logInController.registeredPeople.data.size(); j++) {
+                            if (logInController.registeredPeople.data.get(i).get(0).equals(logInController.registeredPeople.data.get(j).get(0))) {
+                                System.out.println("Registered people:");
+                                System.out.println(logInController.registeredPeople.data.get(i).get(0));
+                                System.out.println(logInController.registeredPeople.data.get(j).get(0));
+                                logInController.registeredPeople.data.remove(j);
+                            }
+                        }
+                    }
                     FileWriter fileWriter = new FileWriter("src/main/resources/com/example/chatroom/txt files/personalData.txt");
                     BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
                     for (int i = 0; i < registeredPeople.data.size(); i++) {
                         for (int j = 0; j < registeredPeople.data.get(i).size(); j++) {
-                            bufferedWriter.write(registeredPeople.data.get(i).get(j));
-                            bufferedWriter.newLine();
+                            if (registeredPeople.data.get(i).get(j) != null) {
+                                bufferedWriter.write(registeredPeople.data.get(i).get(j));
+                                bufferedWriter.newLine();
+                            }
                         }
                     }
                     bufferedWriter.close();
@@ -108,6 +124,7 @@ public class LogInController {
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
+                client.sendSpecificMessage("#deleteMember#: " + homeController.getInputtedData().getUsername());
             });
         }
     }

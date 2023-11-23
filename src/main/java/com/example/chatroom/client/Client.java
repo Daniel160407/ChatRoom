@@ -8,6 +8,8 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
@@ -17,7 +19,7 @@ public class Client extends HomeController {
     private static final int port = 8080;
     private final Socket socket = new Socket(address, port);
     private final DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
-    private final DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
+    protected final DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
     private final HomeController homeController;
 
     public Client(HomeController homeController) throws IOException {
@@ -27,6 +29,7 @@ public class Client extends HomeController {
         receive.start();
         this.homeController = homeController;
     }
+
 
     public void send() {
         try {
@@ -39,6 +42,7 @@ public class Client extends HomeController {
                     }
                 }
                 message = inputtedData.getMessage();
+                System.out.println(message);
                 inputtedData.setMessage(null);
                 dataOutputStream.writeUTF(homeController.getInputtedData().getUsername() + ": " + message);
                 dataOutputStream.flush();
@@ -54,10 +58,23 @@ public class Client extends HomeController {
                 String receivedMessage;
                 try {
                     receivedMessage = dataInputStream.readUTF();
-                    AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("src/main/resources/com/example/chatroom/sounds/notification_sound.wav").getAbsoluteFile());
-                    Clip clip = AudioSystem.getClip();
-                    clip.open(audioInputStream);
-                    clip.start();
+                    System.out.println("Client received message: " + receivedMessage);
+                    if (receivedMessage.startsWith("#encryptedMessage#:")) {
+                        Pattern pattern = Pattern.compile("\\[([^\\]]+)\\]");
+                        Matcher matcher = pattern.matcher(receivedMessage);
+                        if (matcher.find()) {
+                            homeController.onlineMembers.getItems().clear();
+                            homeController.onlineMembers.getItems().addAll(matcher.group(1).split(","));
+                            homeController.onlineMembers.setVisible(true);
+                            System.out.println("second: " + matcher.group(1));
+                        }
+                        continue;
+                    } else {
+                        AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("src/main/resources/com/example/chatroom/sounds/notification_sound.wav").getAbsoluteFile());
+                        Clip clip = AudioSystem.getClip();
+                        clip.open(audioInputStream);
+                        clip.start();
+                    }
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
@@ -66,5 +83,19 @@ public class Client extends HomeController {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void sendSpecificMessage(String message) {
+        try {
+            System.out.println(message);
+            dataOutputStream.writeUTF("#encryptedMessage#: " + message);
+            dataOutputStream.flush();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void getAllOnlineMembers() {
+
     }
 }

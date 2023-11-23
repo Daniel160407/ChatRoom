@@ -24,6 +24,8 @@ public class RegisterController extends LogInController {
     private boolean registerPermission;
     public LogInController logInController;
 
+
+
     @FXML
     private void onSaveButtonAction() {
         registerPermission = logInController.registeredPeople.data.isEmpty();

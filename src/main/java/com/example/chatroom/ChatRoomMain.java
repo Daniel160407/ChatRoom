@@ -21,13 +21,12 @@ public class ChatRoomMain extends Application {
         LogInController logInController = fxmlLoader.getController();
         logInController.logInController = fxmlLoader.getController();
         stage.getIcons().add(new Image("https://cdn.pixabay.com/photo/2021/03/02/12/03/messenger-6062243_1280.png"));
-        stage.setTitle("Hello!");
+        stage.setTitle("ChatRoom");
         stage.setScene(scene);
         stage.show();
         stage.setOnCloseRequest(event -> {
             try {
                 BufferedReader bufferedReader = new BufferedReader(new FileReader("src/main/resources/com/example/chatroom/txt files/personalData.txt"));
-
                 List<List<String>> fileData = new ArrayList<>();
                 List<String> data = new ArrayList<>();
                 String str;
@@ -49,6 +48,17 @@ public class ChatRoomMain extends Application {
                 bufferedReader.close();
             } catch (IOException e) {
                 e.printStackTrace();
+            }
+            System.out.println("Sizes: "+logInController.registeredPeople.data.size());
+            for (int i = 0; i < logInController.registeredPeople.data.size() - 1; i++) {
+                for (int j = i + 1; j < logInController.registeredPeople.data.size(); j++) {
+                    System.out.println("Registered people:");
+                    System.out.println(logInController.registeredPeople.data.get(i).get(0));
+                    System.out.println(logInController.registeredPeople.data.get(j).get(0));
+                    if (logInController.registeredPeople.data.get(i).get(0).equals(logInController.registeredPeople.data.get(j).get(0))) {
+                        logInController.registeredPeople.data.remove(j);
+                    }
+                }
             }
             try {
                 FileWriter fileWriter = new FileWriter("src/main/resources/com/example/chatroom/txt files/personalData.txt");

@@ -2,9 +2,9 @@ package com.example.chatroom.controllers;
 
 import com.example.chatroom.dataClasses.InputtedData;
 import javafx.fxml.FXML;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -22,15 +22,33 @@ public class HomeController {
     private AnchorPane mainAnchorPane;
     @FXML
     private TextField textField;
+    @FXML
+    public ComboBox<String> onlineMembers;
+    @FXML
+    private Pane profilePane;
+    @FXML
+    private Pane changeUsernamePane;
+    @FXML
+    private PasswordField changeUsernamePasswordField;
+    @FXML
+    private TextField changeUsernameUsernameField;
+    @FXML
+    private Label changeUsernameErrorMessage;
+
     public static InputtedData inputtedData = new InputtedData();
     private final List<VBox> sentMessages = new ArrayList<>();
-    private final List<Text> usernames = new ArrayList<>();
-    private int previousSentMessageYPath = 630;
-    private int previousReceivedMessageYPath = 630;
+    public LogInController logInController;
+    public boolean onlineMembersRequest;
+    private int previousSentMessageYPath = 600;
+    private int previousReceivedMessageYPath = 600;
 
     @FXML
     private void onTextFieldAction() {
         inputtedData.setMessage(textField.getText());
+        if (onlineMembers.getValue() != null) {
+            logInController.client.sendSpecificMessage("#privateMessage#: " + inputtedData.getPrivateMessageReceiverUsername());
+            System.out.println(inputtedData.getPrivateMessageReceiverUsername());
+        }
         StackPane stackPane = new StackPane();
         Rectangle rec = new Rectangle(200, 30, Color.web("#607d8b"));
         rec.setArcWidth(20);
@@ -51,20 +69,87 @@ public class HomeController {
             previousSentMessageYPath -= 45;
         }
         mainAnchorPane.getChildren().addAll(sentMessages);
-        previousSentMessageYPath = 630;
+        previousSentMessageYPath = 600;
         textField.clear();
     }
 
+    @FXML
+    private void onTextFieldKeyTyped() {
+        char[] textFieldTextAsArray = textField.getText().toCharArray();
+        if (textFieldTextAsArray.length == 1 && textFieldTextAsArray[0] == '@') {
+            logInController.client.sendSpecificMessage("#getAllOnlineMembers#");
+            System.out.println("Opa");
+        } else {
+            onlineMembersRequest = false;
+        }
+    }
+
+    @FXML
+    private void onOnlineMembersAction() {
+        inputtedData.setPrivateMessageReceiverUsername(onlineMembers.getValue());
+    }
+
+    @FXML
+    private void onAvatarMouseClicked() {
+        profilePane.setVisible(true);
+    }
+
+    @FXML
+    private void onChangeUsernameMouseClicked() {
+        changeUsernamePane.setVisible(true);
+    }
+
+    @FXML
+    private void onChangeUsernamePasswordFieldAction() {
+        System.out.println(changeUsernamePasswordField.getText());
+        getInputtedData().setPasswordToBeChecked(changeUsernamePasswordField.getText());
+    }
+
+    @FXML
+    private void onChangeUsernameUsernameFieldAction() {
+        getInputtedData().setNewUsername(changeUsernameUsernameField.getText());
+        changeUsernameRequest();
+    }
+
+    @FXML
+    private void onChangeUsernameSaveButtonAction() {
+        changeUsernameRequest();
+    }
+
+    private void changeUsernameRequest() {
+        boolean hasChanged = false;
+        for (int i = 0; i < logInController.registeredPeople.data.size(); i++) {
+            System.out.println("Actual password: " + logInController.registeredPeople.data.get(i).get(1));
+            System.out.println("Password provided: " + inputtedData.getPasswordToBeChecked());
+            if (logInController.registeredPeople.data.get(i).get(1).equals(inputtedData.getPasswordToBeChecked())) {
+                getInputtedData().setUsername(changeUsernameUsernameField.getText());
+                System.out.println("Old username: " + logInController.registeredPeople.data.get(i).get(2));
+                logInController.registeredPeople.data.get(i).remove(2);
+                logInController.registeredPeople.data.get(i).add(inputtedData.getNewUsername());
+                System.out.println("New username: " + logInController.registeredPeople.data.get(i).get(2));
+                hasChanged = true;
+                changeUsernamePane.setVisible(false);
+                profilePane.setVisible(false);
+                break;
+            }
+        }
+        if (!hasChanged) {
+            changeUsernameErrorMessage.setText("You have written wrong password!");
+        }
+    }
+
     public void receivedMessageDisplay(String message) {
+        // \(([^)]*)\)
+        System.out.println("Message: " + message);
         String cutMessage = null;
         String cutUsername = null;
-        String patternString = "\\b\\w+:\\s*(.*)";
+        String patternString = ":\\s*(\\w+)";
         Pattern pattern = Pattern.compile(patternString);
         Matcher matcher = pattern.matcher(message);
         while (matcher.find()) {
             cutMessage = matcher.group(1);
         }
-        pattern = Pattern.compile("\\b(\\w+):");
+        pattern = Pattern.compile("(\\w+)\\s*\\:");
         matcher = pattern.matcher(message);
         while (matcher.find()) {
             cutUsername = matcher.group(1);
@@ -94,7 +179,7 @@ public class HomeController {
             previousReceivedMessageYPath -= 45;
         }
         mainAnchorPane.getChildren().addAll(sentMessages);
-        previousReceivedMessageYPath = 630;
+        previousReceivedMessageYPath = 600;
         textField.clear();
     }
 

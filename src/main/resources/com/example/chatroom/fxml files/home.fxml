@@ -1,16 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="733.0" prefWidth="497.0" style="-fx-background-color: #101828;" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.chatroom.controllers.HomeController">
     <children>
-        <TextField fx:id="textField" layoutX="93.0" layoutY="688.0" onAction="#onTextFieldAction" prefHeight="25.0" prefWidth="312.0" />
-        <ScrollPane prefHeight="680.0" prefWidth="497.0">
-            <content>
-                <AnchorPane fx:id="mainAnchorPane" minHeight="0.0" minWidth="0.0" prefHeight="680.0" prefWidth="482.0" style="-fx-background-color: #101828;" />
-            </content>
-        </ScrollPane>
+        <TextField fx:id="textField" layoutX="93.0" layoutY="688.0" onAction="#onTextFieldAction" onKeyTyped="#onTextFieldKeyTyped" prefHeight="25.0" prefWidth="312.0" AnchorPane.bottomAnchor="19.0" AnchorPane.leftAnchor="93.0" />
+      <ComboBox fx:id="onlineMembers" layoutX="93.0" layoutY="663.0" onAction="#onOnlineMembersAction" prefWidth="152.0" visible="false" />
+      <ImageView fitHeight="35.0" fitWidth="35.0" layoutY="3.0" onMouseClicked="#onAvatarMouseClicked" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="3.0">
+         <image>
+            <Image url="@../images/avatar.png" />
+         </image>
+      </ImageView>
+      <AnchorPane fx:id="mainAnchorPane" layoutX="8.0" layoutY="38.0" minHeight="0.0" minWidth="0.0" prefHeight="615.0" prefWidth="482.0" style="-fx-background-color: #101828;" AnchorPane.bottomAnchor="80.0" AnchorPane.leftAnchor="8.0">
+         <children>
+            <Pane fx:id="profilePane" prefHeight="229.0" prefWidth="152.0" visible="false">
+               <children>
+                  <Label fx:id="changeUsername" layoutX="4.0" layoutY="14.0" onMouseClicked="#onChangeUsernameMouseClicked" prefHeight="21.0" prefWidth="145.0" text="Change Your Username" textFill="WHITE" underline="true" />
+               </children>
+            </Pane>
+            <Pane fx:id="changeUsernamePane" layoutX="152.0" layoutY="7.0" prefHeight="155.0" prefWidth="178.0" visible="false">
+               <children>
+                  <Button layoutX="64.0" layoutY="125.0" mnemonicParsing="false" onAction="#onChangeUsernameSaveButtonAction" style="-fx-background-radius: 10; -fx-background-color: #43a047;" text="Save" textFill="WHITE">
+                     <effect>
+                        <DropShadow />
+                     </effect>
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Button>
+                  <PasswordField fx:id="changeUsernamePasswordField" layoutX="15.0" layoutY="32.0" onAction="#onChangeUsernamePasswordFieldAction" />
+                  <Label layoutX="21.0" layoutY="4.0" text="Enter Your Password" textFill="WHITE">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="20.0" layoutY="67.0" text="Enter New Username" textFill="WHITE">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="changeUsernameUsernameField" layoutX="16.0" layoutY="88.0" onAction="#onChangeUsernameUsernameFieldAction" />
+                  <Label fx:id="changeUsernameErrorMessage" layoutX="21.0" layoutY="22.0" prefHeight="18.0" prefWidth="136.0" textFill="RED" />
+               </children>
+            </Pane>
+         </children>
+      </AnchorPane>
     </children>
 </AnchorPane>

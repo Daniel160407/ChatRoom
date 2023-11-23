@@ -7,30 +7,34 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #101828;" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.chatroom.controllers.LogInController">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #101828;"
+            xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.example.chatroom.controllers.LogInController">
     <children>
-        <TextField fx:id="userNameField" layoutX="226.0" layoutY="135.0" />
+        <TextField fx:id="userNameField" layoutX="226.0" layoutY="135.0"/>
         <Label layoutX="245.0" layoutY="40.0" text="Log In" textFill="WHITE">
             <font>
-                <Font size="40.0" />
+                <Font size="40.0"/>
             </font>
         </Label>
         <Label layoutX="144.0" layoutY="137.0" text="User Name:" textFill="WHITE">
             <font>
-                <Font size="15.0" />
+                <Font size="15.0"/>
             </font>
         </Label>
-      <Label layoutX="334.0" layoutY="200.0" onMouseClicked="#onRegisterMouseClicked" text="Register" textFill="WHITE" underline="true" />
-      <TextField fx:id="passwordField" layoutX="226.0" layoutY="175.0" onAction="#onPasswordFieldAction" />
-      <Label layoutX="151.0" layoutY="177.0" text="Password:" textFill="WHITE">
-         <font>
-            <Font size="15.0" />
-         </font>
-      </Label>
-      <Button layoutX="226.0" layoutY="205.0" mnemonicParsing="false" onAction="#onLogInButtonAction" style="-fx-background-radius: 10; -fx-background-color: #43a047;" text="Log In" textFill="WHITE">
-         <effect>
-            <DropShadow />
-         </effect>
-      </Button>
+        <Label layoutX="334.0" layoutY="200.0" onMouseClicked="#onRegisterMouseClicked" text="Register" textFill="WHITE"
+               underline="true"/>
+        <TextField fx:id="passwordField" layoutX="226.0" layoutY="175.0" onAction="#onPasswordFieldAction"/>
+        <Label layoutX="151.0" layoutY="177.0" text="Password:" textFill="WHITE">
+            <font>
+                <Font size="15.0"/>
+            </font>
+        </Label>
+        <Button layoutX="226.0" layoutY="205.0" mnemonicParsing="false" onAction="#onLogInButtonAction"
+                style="-fx-background-radius: 10; -fx-background-color: #43a047;" text="Log In" textFill="WHITE">
+            <effect>
+                <DropShadow/>
+            </effect>
+        </Button>
     </children>
 </AnchorPane>
