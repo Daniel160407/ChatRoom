@@ -55,5 +55,10 @@
             </Pane>
          </children>
       </AnchorPane>
+      <Button layoutX="405.0" layoutY="6.0" mnemonicParsing="false" onAction="#onDisconnectButtonAction" style="-fx-background-radius: 10; -fx-background-color: #43a047;" text="Disconnect" textFill="WHITE">
+         <effect>
+            <DropShadow />
+         </effect>
+      </Button>
     </children>
 </AnchorPane>

@@ -20,7 +20,7 @@ public class Client extends HomeController {
     private final Socket socket = new Socket(address, port);
     private final DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
     protected final DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
-    private final HomeController homeController;
+    public final HomeController homeController;
 
     public Client(HomeController homeController) throws IOException {
         Thread send = new Thread(this::send);

@@ -1,8 +1,12 @@
 package com.example.chatroom.controllers;
 
+import com.example.chatroom.ChatRoomMain;
 import com.example.chatroom.dataClasses.InputtedData;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
@@ -10,7 +14,9 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
@@ -114,6 +120,19 @@ public class HomeController {
     @FXML
     private void onChangeUsernameSaveButtonAction() {
         changeUsernameRequest();
+    }
+
+    @FXML
+    private void onDisconnectButtonAction() throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(ChatRoomMain.class.getResource("fxml files/logIn.fxml"));
+        Scene scene = new Scene(fxmlLoader.load(), 497, 733);
+        Stage stage = new Stage();
+        stage.getIcons().add(new Image("https://cdn.pixabay.com/photo/2021/03/02/12/03/messenger-6062243_1280.png"));
+        stage.setTitle("ChatRoom");
+        stage.setScene(scene);
+        stage.show();
+        mainAnchorPane.getScene().getWindow().hide();
+        logInController.clientInputOutputProvider.exitRequest();
     }
 
     private void changeUsernameRequest() {
