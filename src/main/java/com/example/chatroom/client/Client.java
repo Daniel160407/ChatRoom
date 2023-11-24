@@ -15,16 +15,21 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 
 public class Client extends HomeController {
-    private static final String address = "localhost";
-    private static final int port = 8080;
-    private final Socket socket = new Socket(address, port);
-    private final DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
-    protected final DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
+    private String address;
+    private int port;
+    private Socket socket;
+    private final DataInputStream dataInputStream;
+    protected DataOutputStream dataOutputStream;
     public final HomeController homeController;
+    private final Thread send = new Thread(this::send);
+    private final Thread receive = new Thread(this::receive);
 
-    public Client(HomeController homeController) throws IOException {
-        Thread send = new Thread(this::send);
-        Thread receive = new Thread(this::receive);
+    public Client(String address, int port, HomeController homeController) throws IOException {
+        this.address = address;
+        this.port = port;
+        socket = new Socket(address, port);
+        this.dataInputStream = new DataInputStream(socket.getInputStream());
+        this.dataOutputStream = new DataOutputStream(socket.getOutputStream());
         send.start();
         receive.start();
         this.homeController = homeController;
@@ -76,7 +81,7 @@ public class Client extends HomeController {
                         clip.start();
                     }
                 } catch (Exception e) {
-                    throw new RuntimeException(e);
+                    break;
                 }
                 Platform.runLater(() -> homeController.receivedMessageDisplay(receivedMessage));
             }
@@ -95,7 +100,15 @@ public class Client extends HomeController {
         }
     }
 
-    public void getAllOnlineMembers() {
+    public Socket getSocket() {
+        return socket;
+    }
 
+    public Thread getSend() {
+        return send;
+    }
+
+    public Thread getReceive() {
+        return receive;
     }
 }

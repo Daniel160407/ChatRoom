@@ -1,7 +1,5 @@
 package com.example.chatroom;
 
-import com.example.chatroom.client.Client;
-import com.example.chatroom.controllers.HomeController;
 import com.example.chatroom.controllers.LogInController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

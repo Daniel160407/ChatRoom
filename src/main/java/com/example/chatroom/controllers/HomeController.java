@@ -133,6 +133,8 @@ public class HomeController {
         stage.show();
         mainAnchorPane.getScene().getWindow().hide();
         logInController.clientInputOutputProvider.exitRequest();
+        logInController.client.getSocket().close();
+
     }
 
     private void changeUsernameRequest() {

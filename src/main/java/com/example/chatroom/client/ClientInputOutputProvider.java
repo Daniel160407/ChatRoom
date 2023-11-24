@@ -10,6 +10,7 @@ import java.util.List;
 public class ClientInputOutputProvider {
     private final LogInController logInController;
     private final HomeController homeController;
+    public List<List<String>> data = new ArrayList<>();
 
     public ClientInputOutputProvider(LogInController logInController, HomeController homeController) {
         this.logInController = logInController;
