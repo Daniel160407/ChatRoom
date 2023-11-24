@@ -15,9 +15,8 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 
 public class Client extends HomeController {
-    private String address;
-    private int port;
-    private Socket socket;
+    private String username;
+    private final Socket socket;
     private final DataInputStream dataInputStream;
     protected DataOutputStream dataOutputStream;
     public final HomeController homeController;
@@ -25,8 +24,6 @@ public class Client extends HomeController {
     private final Thread receive = new Thread(this::receive);
 
     public Client(String address, int port, HomeController homeController) throws IOException {
-        this.address = address;
-        this.port = port;
         socket = new Socket(address, port);
         this.dataInputStream = new DataInputStream(socket.getInputStream());
         this.dataOutputStream = new DataOutputStream(socket.getOutputStream());
@@ -46,7 +43,11 @@ public class Client extends HomeController {
                         break;
                     }
                 }
-                message = inputtedData.getMessage();
+                if (homeController.onlineMembers.getValue() != null) {
+                    message = homeController.onlineMembers.getValue() + ": #encryptedMessage#: #privateMessage#: " + inputtedData.getMessage();
+                } else {
+                    message = inputtedData.getMessage();
+                }
                 System.out.println(message);
                 inputtedData.setMessage(null);
                 dataOutputStream.writeUTF(homeController.getInputtedData().getUsername() + ": " + message);
@@ -64,13 +65,17 @@ public class Client extends HomeController {
                 try {
                     receivedMessage = dataInputStream.readUTF();
                     System.out.println("Client received message: " + receivedMessage);
+                    if(receivedMessage.startsWith("#encryptedMessage#: #disconnection#:"))
                     if (receivedMessage.startsWith("#encryptedMessage#:")) {
                         Pattern pattern = Pattern.compile("\\[([^\\]]+)\\]");
                         Matcher matcher = pattern.matcher(receivedMessage);
                         if (matcher.find()) {
-                            homeController.onlineMembers.getItems().clear();
-                            homeController.onlineMembers.getItems().addAll(matcher.group(1).split(","));
-                            homeController.onlineMembers.setVisible(true);
+                            Platform.runLater(() -> {
+                                homeController.onlineMembers.getItems().clear();
+                                homeController.onlineMembers.getItems().addAll(matcher.group(1).split(","));
+                                homeController.onlineMembers.setVisible(true);
+                            });
+
                             System.out.println("second: " + matcher.group(1));
                         }
                         continue;
@@ -92,7 +97,7 @@ public class Client extends HomeController {
 
     public void sendSpecificMessage(String message) {
         try {
-            System.out.println(message);
+            System.out.println("sendSpecificMessage: " + message);
             dataOutputStream.writeUTF("#encryptedMessage#: " + message);
             dataOutputStream.flush();
         } catch (Exception e) {
@@ -100,15 +105,15 @@ public class Client extends HomeController {
         }
     }
 
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     public Socket getSocket() {
         return socket;
     }
 
-    public Thread getSend() {
-        return send;
-    }
-
-    public Thread getReceive() {
-        return receive;
+    public String getUsername() {
+        return username;
     }
 }

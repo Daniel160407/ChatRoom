@@ -72,8 +72,8 @@ public class ChatRoomServer extends ServerController {
             while (true) {
                 String message = dataInputStream.readUTF();
                 System.out.println(message);
-                if (message.startsWith("encryptedMessage#: #privateMessage#:")) {
-                    Pattern pattern = Pattern.compile("#privateMessage#:\\s*(\\w+):");
+                if (message.contains("#encryptedMessage#: #privateMessage#:")) {
+                    Pattern pattern = Pattern.compile(":\\s*(\\w+):");
                     Matcher matcher = pattern.matcher(message);
                     if (matcher.find()) {
                         DataOutputStream dataOutputStream = new DataOutputStream(onlineMembers.get(matcher.group(1)).getOutputStream());
@@ -95,9 +95,11 @@ public class ChatRoomServer extends ServerController {
                         onlineMembers.remove(matcher.group(1));
                         DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
                         dataOutputStream.writeUTF("#encryptedMessage#: #deleteMember#: " + matcher.group(1));
+                        sendMessageToAllExceptSender("#encryptedMessage#: #disconnection#: " + onlineMembers.get(matcher.group(1)), socket);
                         System.out.println(matcher.group(1));
                     }
-                } else if (message.matches(".*:\\s*(\\w+).*") && message.startsWith("#encryptedMessage#: #startup#:")) {
+
+                } else if (message.matches(".*:\\s*(\\w+).*") && message.startsWith("#encryptedMessage#: #addUsername#:")) {
                     Pattern pattern = Pattern.compile("(.*:\\s*(\\w+).*)");
                     Matcher matcher = pattern.matcher(message);
                     if (matcher.find()) {
