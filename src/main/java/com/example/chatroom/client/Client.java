@@ -66,8 +66,15 @@ public class Client extends HomeController {
                 try {
                     receivedMessage = dataInputStream.readUTF();
                     System.out.println("Client received message: " + receivedMessage);
-                    if (receivedMessage.startsWith("#encryptedMessage#: #clientConnected#")) {
-                        Platform.runLater(() -> homeController.userConnectDisconnectDisplay("User connected"));
+                    if (receivedMessage.startsWith("#encryptedMessage#: #clientConnected#:")) {
+                        Pattern pattern = Pattern.compile(":\\s*([^:]+)$");
+                        Matcher matcher = pattern.matcher(receivedMessage);
+                        if (matcher.find()) {
+                            Platform.runLater(() -> homeController.userConnectDisconnectDisplay(matcher.group(1)));
+                        } else {
+                            Platform.runLater(() -> homeController.userConnectDisconnectDisplay("User connected"));
+                        }
+
                     } else if (receivedMessage.startsWith("#encryptedMessage#: #clientDisconnected#:")) {
                         Pattern pattern = Pattern.compile("\\s*(\\w+)$");
                         Matcher matcher = pattern.matcher(receivedMessage);

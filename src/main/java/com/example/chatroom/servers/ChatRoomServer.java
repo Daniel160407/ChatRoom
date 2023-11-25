@@ -74,7 +74,8 @@ public class ChatRoomServer extends ServerController {
             DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
             dataOutputStream.writeUTF("#encryptedMessage#: #countOfOnlineMembers#: " + countOfOnlineMembers);
             dataOutputStream.flush();
-            sendMessageToAllExceptSender("#encryptedMessage#: #clientConnected#", socket);
+            dataOutputStream.writeUTF("#encryptedMessage#: #clientConnected#: Welcome to ChatRoom!");
+            sendMessageToAllExceptSender("#encryptedMessage#: #clientConnected#:", socket);
             while (true) {
                 String message = dataInputStream.readUTF();
                 System.out.println(message);
