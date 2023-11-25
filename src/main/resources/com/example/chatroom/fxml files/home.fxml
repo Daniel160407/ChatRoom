@@ -46,12 +46,15 @@
                   <Label fx:id="changeUsernameErrorMessage" layoutX="21.0" layoutY="22.0" prefHeight="18.0" prefWidth="136.0" textFill="RED" />
                </children>
             </Pane>
+            <Label fx:id="userConnectDisconnectNotification" layoutX="227.0" layoutY="14.0" textFill="WHITE" visible="false" />
          </children>
       </AnchorPane>
-      <Button layoutX="405.0" layoutY="6.0" mnemonicParsing="false" onAction="#onDisconnectButtonAction" style="-fx-background-radius: 10; -fx-background-color: #43a047;" text="Disconnect" textFill="WHITE">
+      <Button layoutX="405.0" layoutY="6.0" mnemonicParsing="false" onAction="#onDisconnectButtonAction" style="-fx-background-radius: 10; -fx-background-color: #e53935;" text="Disconnect" textFill="WHITE">
          <effect>
             <DropShadow />
          </effect>
       </Button>
+      <Label fx:id="onlineStatus" layoutX="235.0" layoutY="12.0" textFill="WHITE" />
+      <Label layoutX="249.0" layoutY="12.0" text="Online" textFill="WHITE" />
     </children>
 </AnchorPane>

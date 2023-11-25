@@ -15,6 +15,4 @@ public class ClientInputOutputProvider {
         this.connectController = connectController;
         this.homeController = homeController;
     }
-
-
 }

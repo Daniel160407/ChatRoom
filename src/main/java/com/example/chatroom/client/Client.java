@@ -8,6 +8,7 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.sound.sampled.AudioInputStream;
@@ -65,8 +66,24 @@ public class Client extends HomeController {
                 try {
                     receivedMessage = dataInputStream.readUTF();
                     System.out.println("Client received message: " + receivedMessage);
-                    if(receivedMessage.startsWith("#encryptedMessage#: #disconnection#:"))
-                    if (receivedMessage.startsWith("#encryptedMessage#:")) {
+                    if (receivedMessage.startsWith("#encryptedMessage#: #clientConnected#")) {
+                        Platform.runLater(() -> homeController.userConnectDisconnectDisplay("User connected"));
+                    } else if (receivedMessage.startsWith("#encryptedMessage#: #clientDisconnected#:")) {
+                        Pattern pattern = Pattern.compile("\\s*(\\w+)$");
+                        Matcher matcher = pattern.matcher(receivedMessage);
+                        if (matcher.find()) {
+                            Platform.runLater(() -> homeController.userConnectDisconnectDisplay(matcher.group(1) + " disconnected"));
+                        }
+                        System.out.println("Error1");
+                    } else if (receivedMessage.startsWith("#encryptedMessage#: #countOfOnlineMembers#:")) {
+                        Pattern pattern = Pattern.compile(":\\s*(\\d+)$");
+                        Matcher matcher = pattern.matcher(receivedMessage);
+                        if (matcher.find()) {
+                            System.out.println("Count: " + matcher.group(1));
+                            Platform.runLater(() -> homeController.onlineStatus.setText(matcher.group(1)));
+                        }
+                        System.out.println("Error2");
+                    } else if (receivedMessage.startsWith("#encryptedMessage#:")) {
                         Pattern pattern = Pattern.compile("\\[([^\\]]+)\\]");
                         Matcher matcher = pattern.matcher(receivedMessage);
                         if (matcher.find()) {
@@ -75,11 +92,11 @@ public class Client extends HomeController {
                                 homeController.onlineMembers.getItems().addAll(matcher.group(1).split(","));
                                 homeController.onlineMembers.setVisible(true);
                             });
-
-                            System.out.println("second: " + matcher.group(1));
                         }
+                        System.out.println("Error3");
                         continue;
                     } else {
+                        Platform.runLater(() -> homeController.receivedMessageDisplay(receivedMessage));
                         AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("src/main/resources/com/example/chatroom/sounds/notification_sound.wav").getAbsoluteFile());
                         Clip clip = AudioSystem.getClip();
                         clip.open(audioInputStream);
@@ -88,7 +105,7 @@ public class Client extends HomeController {
                 } catch (Exception e) {
                     break;
                 }
-                Platform.runLater(() -> homeController.receivedMessageDisplay(receivedMessage));
+
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -104,6 +121,7 @@ public class Client extends HomeController {
             e.printStackTrace();
         }
     }
+
 
     public void setUsername(String username) {
         this.username = username;

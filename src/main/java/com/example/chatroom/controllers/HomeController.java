@@ -2,6 +2,7 @@ package com.example.chatroom.controllers;
 
 import com.example.chatroom.ChatRoomMain;
 import com.example.chatroom.dataClasses.InputtedData;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -35,6 +36,10 @@ public class HomeController {
     private Pane changeUsernamePane;
     @FXML
     private TextField changeUsernameUsernameField;
+    @FXML
+    public Label onlineStatus;
+    @FXML
+    private Label userConnectDisconnectNotification;
 
     public static InputtedData inputtedData = new InputtedData();
     private final List<VBox> sentMessages = new ArrayList<>();
@@ -185,6 +190,21 @@ public class HomeController {
         mainAnchorPane.getChildren().addAll(sentMessages);
         previousReceivedMessageYPath = 600;
         textField.clear();
+    }
+
+    public void userConnectDisconnectDisplay(String notification) {
+        new Thread(() -> {
+            Platform.runLater(() -> {
+                userConnectDisconnectNotification.setText(notification);
+                userConnectDisconnectNotification.setVisible(true);
+            });
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            Platform.runLater(() -> userConnectDisconnectNotification.setVisible(false));
+        }).start();
     }
 
     public InputtedData getInputtedData() {
