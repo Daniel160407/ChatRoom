@@ -50,7 +50,10 @@ public class ConnectController {
             System.out.println("Entered");
             client = new Client(addressField.getText(), Integer.parseInt(portField.getText()), homeController);
             homeController.connectController = this.connectController;
-            stage.setOnCloseRequest(event -> exitRequest());
+            stage.setOnCloseRequest(event -> {
+                exitRequest();
+                System.exit(0);
+            });
             clientInputOutputProvider = new ClientInputOutputProvider(connectController, client.homeController);
         } catch (IOException e) {
             e.printStackTrace();

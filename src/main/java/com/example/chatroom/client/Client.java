@@ -8,6 +8,7 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -51,8 +52,19 @@ public class Client extends HomeController {
                 }
                 System.out.println(message);
                 inputtedData.setMessage(null);
-                dataOutputStream.writeUTF(homeController.getInputtedData().getUsername() + ": " + message);
-                dataOutputStream.flush();
+                try {
+                    dataOutputStream.writeUTF(homeController.getInputtedData().getUsername() + ": " + message);
+                    dataOutputStream.flush();
+                } catch (SocketException e) {
+                    Platform.runLater(() -> {
+                        try {
+                            homeController.clientDisconnectAction();
+                        } catch (IOException ex) {
+                            throw new RuntimeException(ex);
+                        }
+                    });
+                }
+
             }
         } catch (Exception e) {
             e.printStackTrace();

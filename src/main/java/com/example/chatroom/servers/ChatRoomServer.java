@@ -38,6 +38,7 @@ public class ChatRoomServer extends ServerController {
         Scene scene = new Scene(root, 800, 600);
         stage.setScene(scene);
         stage.show();
+        stage.setOnCloseRequest(event -> System.exit(0));
         Thread serverThread = new Thread(() -> {
             while (true) {
                 System.out.print("");

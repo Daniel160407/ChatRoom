@@ -133,6 +133,21 @@ public class HomeController {
         stage.setTitle("ChatRoom");
         stage.setScene(scene);
         stage.show();
+        stage.setOnCloseRequest(event -> System.exit(0));
+    }
+
+    public void clientDisconnectAction() throws IOException {
+        connectController.client.getSocket().close();
+        textField.getScene().getWindow().hide();
+        FXMLLoader fxmlLoader = new FXMLLoader(ChatRoomMain.class.getResource("fxml files/connect.fxml"));
+        Scene scene = new Scene(fxmlLoader.load(), 497, 733);
+        ConnectController connectController = fxmlLoader.getController();
+        connectController.connectController = fxmlLoader.getController();
+        Stage stage = new Stage();
+        stage.getIcons().add(new Image("https://cdn.pixabay.com/photo/2021/03/02/12/03/messenger-6062243_1280.png"));
+        stage.setTitle("ChatRoom");
+        stage.setScene(scene);
+        stage.show();
     }
 
     private void changeUsernameRequest() {

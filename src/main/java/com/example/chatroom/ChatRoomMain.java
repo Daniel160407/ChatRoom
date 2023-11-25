@@ -22,7 +22,7 @@ public class ChatRoomMain extends Application {
         stage.setTitle("ChatRoom");
         stage.setScene(scene);
         stage.show();
-        stage.setOnCloseRequest(event -> connectController.exitRequest());
+        stage.setOnCloseRequest(event -> System.exit(0));
     }
 
     public static void main(String[] args) {
