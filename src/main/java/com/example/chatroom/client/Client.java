@@ -9,7 +9,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketException;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.sound.sampled.AudioInputStream;
@@ -17,18 +16,17 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 
 public class Client extends HomeController {
-    private String username;
     private final Socket socket;
     private final DataInputStream dataInputStream;
     protected DataOutputStream dataOutputStream;
     public final HomeController homeController;
-    private final Thread send = new Thread(this::send);
-    private final Thread receive = new Thread(this::receive);
 
     public Client(String address, int port, HomeController homeController) throws IOException {
         socket = new Socket(address, port);
         this.dataInputStream = new DataInputStream(socket.getInputStream());
         this.dataOutputStream = new DataOutputStream(socket.getOutputStream());
+        Thread send = new Thread(this::send);
+        Thread receive = new Thread(this::receive);
         send.start();
         receive.start();
         this.homeController = homeController;
@@ -113,7 +111,6 @@ public class Client extends HomeController {
                             });
                         }
                         System.out.println("Error3");
-                        continue;
                     } else {
                         Platform.runLater(() -> homeController.receivedMessageDisplay(receivedMessage));
                         AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("src/main/resources/com/example/chatroom/sounds/notification_sound.wav").getAbsoluteFile());
@@ -142,15 +139,9 @@ public class Client extends HomeController {
     }
 
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
 
     public Socket getSocket() {
         return socket;
     }
 
-    public String getUsername() {
-        return username;
-    }
 }

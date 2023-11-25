@@ -2,7 +2,6 @@ package com.example.chatroom.controllers;
 
 import com.example.chatroom.ChatRoomMain;
 import com.example.chatroom.client.Client;
-import com.example.chatroom.client.ClientInputOutputProvider;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -20,9 +19,7 @@ public class ConnectController {
 
 
     public ConnectController connectController;
-    private HomeController homeController;
     public Client client;
-    public ClientInputOutputProvider clientInputOutputProvider;
 
 
     @FXML
@@ -46,7 +43,7 @@ public class ConnectController {
             stage.setTitle("ChatRoom");
             stage.setScene(scene);
             stage.show();
-            homeController = fxmlLoader.getController();
+            HomeController homeController = fxmlLoader.getController();
             System.out.println("Entered");
             client = new Client(addressField.getText(), Integer.parseInt(portField.getText()), homeController);
             homeController.connectController = this.connectController;
@@ -54,7 +51,6 @@ public class ConnectController {
                 exitRequest();
                 System.exit(0);
             });
-            clientInputOutputProvider = new ClientInputOutputProvider(connectController, client.homeController);
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -40,12 +40,9 @@ public class ChatRoomServer extends ServerController {
         stage.show();
         stage.setOnCloseRequest(event -> System.exit(0));
         Thread serverThread = new Thread(() -> {
-            while (true) {
+            do {
                 System.out.print("");
-                if (serverController.inputtedData.getPort() != 0) {
-                    break;
-                }
-            }
+            } while (serverController.inputtedData.getPort() == 0);
             try (ServerSocket serverSocket = new ServerSocket(serverController.inputtedData.getPort())) {
                 Platform.runLater(() -> serverController.addNotificationText("Server is running and waiting for connections..."));
                 while (true) {
@@ -151,10 +148,10 @@ public class ChatRoomServer extends ServerController {
     }
 
     private void sendMessageToAllExceptSender(String message, Socket senderSocket) throws IOException {
-        for (int i = 0; i < outputStreams.size(); i++) {
-            if (!outputStreams.get(i).equals(senderSocket)) {
+        for (Socket outputStream : outputStreams) {
+            if (!outputStream.equals(senderSocket)) {
                 try {
-                    DataOutputStream dataOutputStream = new DataOutputStream(outputStreams.get(i).getOutputStream());
+                    DataOutputStream dataOutputStream = new DataOutputStream(outputStream.getOutputStream());
                     dataOutputStream.writeUTF(message);
                 } catch (IOException e) {
                     // Handle the exception (e.g., remove the disconnected client)

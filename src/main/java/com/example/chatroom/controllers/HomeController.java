@@ -86,7 +86,6 @@ public class HomeController {
 
     @FXML
     private void onOnlineMembersAction() {
-        inputtedData.setPrivateMessageReceiverUsername(onlineMembers.getValue());
         onlineMembers.setVisible(false);
     }
 
@@ -103,7 +102,6 @@ public class HomeController {
 
     @FXML
     private void onChangeUsernameUsernameFieldAction() {
-        getInputtedData().setNewUsername(changeUsernameUsernameField.getText());
         changeUsernameRequest();
         changeUsernamePane.setVisible(false);
         profilePane.setVisible(false);
@@ -112,7 +110,6 @@ public class HomeController {
 
     @FXML
     private void onChangeUsernameSaveButtonAction() {
-        getInputtedData().setNewUsername(changeUsernameUsernameField.getText());
         changeUsernameRequest();
         changeUsernamePane.setVisible(false);
         profilePane.setVisible(false);
