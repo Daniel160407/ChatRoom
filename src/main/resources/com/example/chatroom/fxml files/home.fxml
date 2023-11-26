@@ -22,12 +22,12 @@
       </ImageView>
       <AnchorPane fx:id="mainAnchorPane" layoutX="8.0" layoutY="38.0" minHeight="0.0" minWidth="0.0" prefHeight="615.0" prefWidth="482.0" style="-fx-background-color: #101828;" AnchorPane.bottomAnchor="80.0" AnchorPane.leftAnchor="8.0">
          <children>
-            <Pane fx:id="profilePane" prefHeight="229.0" prefWidth="152.0" style="-fx-background-color: #374151;" visible="false">
+            <Pane fx:id="profilePane" prefHeight="59.0" prefWidth="152.0" style="-fx-background-color: #374151;" visible="false">
                <children>
                   <Label fx:id="changeUsername" layoutX="4.0" layoutY="14.0" onMouseClicked="#onChangeUsernameMouseClicked" prefHeight="21.0" prefWidth="145.0" text="Change Your Username" textFill="WHITE" underline="true" />
                </children>
             </Pane>
-            <Pane fx:id="changeUsernamePane" layoutX="152.0" layoutY="7.0" prefHeight="155.0" prefWidth="178.0" style="-fx-background-color: #374151;" visible="false">
+            <Pane fx:id="changeUsernamePane" layoutX="158.0" prefHeight="136.0" prefWidth="178.0" style="-fx-background-color: #374151;" visible="false">
                <children>
                   <Button layoutX="64.0" layoutY="86.0" mnemonicParsing="false" onAction="#onChangeUsernameSaveButtonAction" style="-fx-background-radius: 10; -fx-background-color: #43a047;" text="Save" textFill="WHITE">
                      <effect>

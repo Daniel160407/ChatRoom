@@ -7,6 +7,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.net.ConnectException;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.regex.Matcher;
@@ -16,44 +17,52 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 
 public class Client extends HomeController {
-    private final Socket socket;
-    private final DataInputStream dataInputStream;
+    private Socket socket = null;
+    private DataInputStream dataInputStream = null;
     protected DataOutputStream dataOutputStream;
-    public final HomeController homeController;
+    public HomeController homeController = null;
+    public boolean threadKiller = false;
+    public Thread send = new Thread(this::send);
+    public Thread receive = new Thread(this::receive);
 
     public Client(String address, int port, HomeController homeController) throws IOException {
-        socket = new Socket(address, port);
-        this.dataInputStream = new DataInputStream(socket.getInputStream());
-        this.dataOutputStream = new DataOutputStream(socket.getOutputStream());
-        Thread send = new Thread(this::send);
-        Thread receive = new Thread(this::receive);
-        send.start();
-        receive.start();
-        this.homeController = homeController;
+        try {
+            socket = new Socket(address, port);
+            this.dataInputStream = new DataInputStream(socket.getInputStream());
+            this.dataOutputStream = new DataOutputStream(socket.getOutputStream());
+            send.start();
+            receive.start();
+            this.homeController = homeController;
+        } catch (ConnectException e) {
+            homeController.connectController.notificationLabel.setText("Server with port you provided, doesn`t exist!");
+        }
     }
 
 
     public void send() {
         try {
             String message;
-            while (true) {
-                while (true) {
+            while (!threadKiller) {
+                while (!threadKiller) {
                     System.out.print("");
                     if (inputtedData.getMessage() != null) {
                         break;
                     }
+                }
+                if (threadKiller) {
+                    break;
                 }
                 if (homeController.onlineMembers.getValue() != null) {
                     message = homeController.onlineMembers.getValue() + ": #encryptedMessage#: #privateMessage#: " + inputtedData.getMessage();
                 } else {
                     message = inputtedData.getMessage();
                 }
-                System.out.println(message);
                 inputtedData.setMessage(null);
                 try {
                     dataOutputStream.writeUTF(homeController.getInputtedData().getUsername() + ": " + message);
                     dataOutputStream.flush();
                 } catch (SocketException e) {
+                    this.threadKiller = true;
                     Platform.runLater(() -> {
                         try {
                             homeController.clientDisconnectAction();
@@ -62,20 +71,19 @@ public class Client extends HomeController {
                         }
                     });
                 }
-
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+        threadKiller = false;
     }
 
     public void receive() {
         try {
-            while (true) {
+            while (!threadKiller) {
                 String receivedMessage;
                 try {
                     receivedMessage = dataInputStream.readUTF();
-                    System.out.println("Client received message: " + receivedMessage);
                     if (receivedMessage.startsWith("#encryptedMessage#: #clientConnected#:")) {
                         Pattern pattern = Pattern.compile(":\\s*([^:]+)$");
                         Matcher matcher = pattern.matcher(receivedMessage);
@@ -91,15 +99,12 @@ public class Client extends HomeController {
                         if (matcher.find()) {
                             Platform.runLater(() -> homeController.userConnectDisconnectDisplay(matcher.group(1) + " disconnected"));
                         }
-                        System.out.println("Error1");
                     } else if (receivedMessage.startsWith("#encryptedMessage#: #countOfOnlineMembers#:")) {
                         Pattern pattern = Pattern.compile(":\\s*(\\d+)$");
                         Matcher matcher = pattern.matcher(receivedMessage);
                         if (matcher.find()) {
-                            System.out.println("Count: " + matcher.group(1));
                             Platform.runLater(() -> homeController.onlineStatus.setText(matcher.group(1)));
                         }
-                        System.out.println("Error2");
                     } else if (receivedMessage.startsWith("#encryptedMessage#:")) {
                         Pattern pattern = Pattern.compile("\\[([^\\]]+)\\]");
                         Matcher matcher = pattern.matcher(receivedMessage);
@@ -110,7 +115,6 @@ public class Client extends HomeController {
                                 homeController.onlineMembers.setVisible(true);
                             });
                         }
-                        System.out.println("Error3");
                     } else {
                         Platform.runLater(() -> homeController.receivedMessageDisplay(receivedMessage));
                         AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("src/main/resources/com/example/chatroom/sounds/notification_sound.wav").getAbsoluteFile());
@@ -130,14 +134,12 @@ public class Client extends HomeController {
 
     public void sendSpecificMessage(String message) {
         try {
-            System.out.println("sendSpecificMessage: " + message);
             dataOutputStream.writeUTF("#encryptedMessage#: " + message);
             dataOutputStream.flush();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
 
 
     public Socket getSocket() {

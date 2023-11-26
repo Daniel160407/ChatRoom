@@ -92,7 +92,6 @@ public class HomeController {
     @FXML
     private void onAvatarMouseClicked() {
         profilePane.setVisible(!profilePane.isVisible());
-        System.out.println(connectController);
     }
 
     @FXML
@@ -118,12 +117,13 @@ public class HomeController {
 
     @FXML
     private void onDisconnectButtonAction() throws IOException {
+        connectController.client.threadKiller = true;
         connectController.exitRequest();
         connectController.client.getSocket().close();
         textField.getScene().getWindow().hide();
         FXMLLoader fxmlLoader = new FXMLLoader(ChatRoomMain.class.getResource("fxml files/connect.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 497, 733);
-        ConnectController connectController = fxmlLoader.getController();
+        connectController = fxmlLoader.getController();
         connectController.connectController = fxmlLoader.getController();
         Stage stage = new Stage();
         stage.getIcons().add(new Image("https://cdn.pixabay.com/photo/2021/03/02/12/03/messenger-6062243_1280.png"));
@@ -138,7 +138,7 @@ public class HomeController {
         textField.getScene().getWindow().hide();
         FXMLLoader fxmlLoader = new FXMLLoader(ChatRoomMain.class.getResource("fxml files/connect.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 497, 733);
-        ConnectController connectController = fxmlLoader.getController();
+        connectController = fxmlLoader.getController();
         connectController.connectController = fxmlLoader.getController();
         Stage stage = new Stage();
         stage.getIcons().add(new Image("https://cdn.pixabay.com/photo/2021/03/02/12/03/messenger-6062243_1280.png"));
@@ -152,8 +152,6 @@ public class HomeController {
     }
 
     public void receivedMessageDisplay(String message) {
-        // \(([^)]*)\)
-        System.out.println("Message: " + message);
         String cutMessage = null;
         String cutUsername = null;
         String patternString = ":\\s*(\\w+)";
@@ -179,9 +177,6 @@ public class HomeController {
         vBox.setLayoutX(23);
         vBox.setLayoutY(previousReceivedMessageYPath);
         stackPane.getChildren().addAll(rec, text);
-        System.out.println("MESSAGE:");
-        System.out.println(message);
-        System.out.println(cutMessage);
         assert cutUsername != null;
         if (cutUsername.equals("null")) {
             vBox.getChildren().add(stackPane);

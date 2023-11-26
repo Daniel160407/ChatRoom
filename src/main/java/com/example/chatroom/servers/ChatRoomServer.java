@@ -49,8 +49,6 @@ public class ChatRoomServer extends ServerController {
                     Socket socket = serverSocket.accept();
                     Platform.runLater(() -> serverController.addNotificationText("Client connected: " + socket));
                     outputStreams.add(socket);
-
-                    // Create a new thread to handle the client
                     new Thread(() -> handleClient(socket)).start();
                 }
             } catch (IOException e) {
@@ -66,7 +64,6 @@ public class ChatRoomServer extends ServerController {
 
     private void handleClient(Socket socket) {
         try (DataInputStream dataInputStream = new DataInputStream(socket.getInputStream())) {
-            // Read the username once when the client connects
             countOfOnlineMembers++;
             sendMessageToAllExceptSender("#encryptedMessage#: #countOfOnlineMembers#: " + countOfOnlineMembers, socket);
             DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
@@ -76,7 +73,6 @@ public class ChatRoomServer extends ServerController {
             sendMessageToAllExceptSender("#encryptedMessage#: #clientConnected#:", socket);
             while (true) {
                 String message = dataInputStream.readUTF();
-                System.out.println(message);
                 if (message.contains("#encryptedMessage#: #privateMessage#:")) {
                     Pattern pattern = Pattern.compile(":\\s*(\\w+):");
                     Matcher matcher = pattern.matcher(message);
@@ -85,50 +81,34 @@ public class ChatRoomServer extends ServerController {
                         dataOutputStream.writeUTF(message);
                         dataOutputStream.flush();
                     }
-                    System.out.println("Private message");
-                    System.out.println(onlineMembers.get(matcher.group(1)));
                 } else if (message.endsWith("#getAllOnlineMembers#")) {
                     dataOutputStream = new DataOutputStream(socket.getOutputStream());
                     dataOutputStream.writeUTF("#encryptedMessage#: #getAllOnlineMembers#: " + onlineMembersUsernames);
-                    System.out.println("Server: " + onlineMembersUsernames);
                 } else if (message.contains("#encryptedMessage#: #deleteMember#:")) {
                     Pattern pattern = Pattern.compile(":\\s*(\\w+)$");
                     Matcher matcher = pattern.matcher(message);
-                    System.out.println("Username to be deleted: " + message);
                     if (matcher.find()) {
-                        dataOutputStream = new DataOutputStream(socket.getOutputStream());
-                        dataOutputStream.writeUTF("#encryptedMessage#: #deleteMember#: " + matcher.group(1));
-                        sendMessageToAllExceptSender("#encryptedMessage#: #disconnection#: " + onlineMembers.get(matcher.group(1)), socket);
-                        System.out.println(matcher.group(1));
+                        onlineMembersUsernames.remove(matcher.group(1));
+                        onlineMembers.remove(matcher.group(1));
                     }
-
                 } else if (message.matches(".*:\\s*(\\w+).*") && message.startsWith("#encryptedMessage#: #addUsername#:")) {
                     Pattern pattern = Pattern.compile("(.*:\\s*(\\w+).*)");
                     Matcher matcher = pattern.matcher(message);
                     if (matcher.find()) {
-                        System.out.println("Matcher found:");
-                        System.out.println(matcher.group(1));
-                        System.out.println(matcher.group(2));
                         onlineMembers.put(matcher.group(2), socket);
                         onlineMembersUsernames.add(matcher.group(2));
                     }
-                    System.out.println("2");
                 } else {
-                    // Send the message to all clients except the sender
-                    System.out.println(message);
                     sendMessageToAllExceptSender(message, socket);
-                    System.out.println("3");
                 }
             }
         } catch (IOException e) {
-            // Handle client disconnect
             Platform.runLater(() -> serverController.addNotificationText("Client disconnected: " + socket));
             countOfOnlineMembers--;
             try {
                 sendMessageToAllExceptSender("#encryptedMessage#: #countOfOnlineMembers#: " + countOfOnlineMembers, socket);
                 boolean sent = false;
                 for (String onlineMembersUsername : onlineMembersUsernames) {
-                    System.out.println(onlineMembersUsername);
                     if (onlineMembers.get(onlineMembersUsername) == socket) {
                         sendMessageToAllExceptSender("#encryptedMessage#: #clientDisconnected#: " + onlineMembersUsername, socket);
                         onlineMembersUsernames.remove(onlineMembersUsername);
@@ -154,7 +134,6 @@ public class ChatRoomServer extends ServerController {
                     DataOutputStream dataOutputStream = new DataOutputStream(outputStream.getOutputStream());
                     dataOutputStream.writeUTF(message);
                 } catch (IOException e) {
-                    // Handle the exception (e.g., remove the disconnected client)
                     e.printStackTrace();
                 }
             }

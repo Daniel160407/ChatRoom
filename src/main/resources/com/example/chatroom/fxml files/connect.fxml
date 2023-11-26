@@ -7,32 +7,30 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #101828;"
-            xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.example.chatroom.controllers.ConnectController">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #101828;" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.chatroom.controllers.ConnectController">
     <children>
-        <Button layoutX="226.0" layoutY="158.0" mnemonicParsing="false" onAction="#onConnectButtonAction"
-                style="-fx-background-radius: 10; -fx-background-color: #43a047;" text="Connect" textFill="WHITE">
+        <Button layoutX="226.0" layoutY="158.0" mnemonicParsing="false" onAction="#onConnectButtonAction" style="-fx-background-radius: 10; -fx-background-color: #43a047;" text="Connect" textFill="WHITE">
             <effect>
-                <DropShadow/>
+                <DropShadow />
             </effect>
         </Button>
         <Label layoutX="199.0" layoutY="14.0" text="Connection" textFill="WHITE">
             <font>
-                <Font size="40.0"/>
+                <Font size="40.0" />
             </font>
         </Label>
-        <TextField fx:id="addressField" layoutX="226.0" layoutY="80.0"/>
-        <TextField fx:id="portField" layoutX="226.0" layoutY="124.0" onAction="#onPortFieldAction"/>
+        <TextField fx:id="addressField" layoutX="226.0" layoutY="80.0" />
+        <TextField fx:id="portField" layoutX="226.0" layoutY="124.0" onAction="#onPortFieldAction" />
         <Label layoutX="156.0" layoutY="82.0" text="Address:" textFill="WHITE">
             <font>
-                <Font size="15.0"/>
+                <Font size="15.0" />
             </font>
         </Label>
         <Label layoutX="169.0" layoutY="126.0" text="Port:" textFill="WHITE">
             <font>
-                <Font size="15.0"/>
+                <Font size="15.0" />
             </font>
         </Label>
+      <Label fx:id="notificationLabel" layoutX="226.0" layoutY="64.0" textFill="RED" />
     </children>
 </AnchorPane>
