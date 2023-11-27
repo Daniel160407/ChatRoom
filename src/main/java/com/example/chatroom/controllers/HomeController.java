@@ -154,7 +154,7 @@ public class HomeController {
     public void receivedMessageDisplay(String message) {
         String cutMessage = null;
         String cutUsername = null;
-        String patternString = ":\\s*(\\w+)";
+        String patternString = ":(.+)";
         Pattern pattern = Pattern.compile(patternString);
         Matcher matcher = pattern.matcher(message);
         while (matcher.find()) {
