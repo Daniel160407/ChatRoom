@@ -74,13 +74,25 @@ public class ChatRoomServer extends ServerController {
             while (true) {
                 String message = dataInputStream.readUTF();
                 if (message.contains("#encryptedMessage#: #privateMessage#:")) {
-                    Pattern pattern = Pattern.compile(":\\s*(\\w+):");
+                    Pattern pattern = Pattern.compile("(\\w+):");
                     Matcher matcher = pattern.matcher(message);
+                    String sender = null;
+                    String receiver = null;
+                    String sentMessage = null;
                     if (matcher.find()) {
-                        dataOutputStream = new DataOutputStream(onlineMembers.get(matcher.group(1)).getOutputStream());
-                        dataOutputStream.writeUTF(message);
-                        dataOutputStream.flush();
+                        sender = matcher.group(1);
+                        if (matcher.find()) {
+                            receiver = matcher.group(1);
+                        }
                     }
+                    pattern = Pattern.compile("#privateMessage#: (.+)");
+                    matcher = pattern.matcher(message);
+                    if (matcher.find()) {
+                        sentMessage = matcher.group(1);
+                    }
+                    dataOutputStream = new DataOutputStream(onlineMembers.get(receiver).getOutputStream());
+                    dataOutputStream.writeUTF(sender + ": " + sentMessage);
+                    dataOutputStream.flush();
                 } else if (message.endsWith("#getAllOnlineMembers#")) {
                     dataOutputStream = new DataOutputStream(socket.getOutputStream());
                     dataOutputStream.writeUTF("#encryptedMessage#: #getAllOnlineMembers#: " + onlineMembersUsernames);

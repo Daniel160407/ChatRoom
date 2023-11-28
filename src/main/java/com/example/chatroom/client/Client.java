@@ -84,44 +84,7 @@ public class Client extends HomeController {
                 String receivedMessage;
                 try {
                     receivedMessage = dataInputStream.readUTF();
-                    if (receivedMessage.startsWith("#encryptedMessage#: #clientConnected#:")) {
-                        Pattern pattern = Pattern.compile(":\\s*([^:]+)$");
-                        Matcher matcher = pattern.matcher(receivedMessage);
-                        if (matcher.find()) {
-                            Platform.runLater(() -> homeController.userConnectDisconnectDisplay(matcher.group(1)));
-                        } else {
-                            Platform.runLater(() -> homeController.userConnectDisconnectDisplay("User connected"));
-                        }
-
-                    } else if (receivedMessage.startsWith("#encryptedMessage#: #clientDisconnected#:")) {
-                        Pattern pattern = Pattern.compile("\\s*(\\w+)$");
-                        Matcher matcher = pattern.matcher(receivedMessage);
-                        if (matcher.find()) {
-                            Platform.runLater(() -> homeController.userConnectDisconnectDisplay(matcher.group(1) + " disconnected"));
-                        }
-                    } else if (receivedMessage.startsWith("#encryptedMessage#: #countOfOnlineMembers#:")) {
-                        Pattern pattern = Pattern.compile(":\\s*(\\d+)$");
-                        Matcher matcher = pattern.matcher(receivedMessage);
-                        if (matcher.find()) {
-                            Platform.runLater(() -> homeController.onlineStatus.setText(matcher.group(1)));
-                        }
-                    } else if (receivedMessage.startsWith("#encryptedMessage#:")) {
-                        Pattern pattern = Pattern.compile("\\[([^\\]]+)\\]");
-                        Matcher matcher = pattern.matcher(receivedMessage);
-                        if (matcher.find()) {
-                            Platform.runLater(() -> {
-                                homeController.onlineMembers.getItems().clear();
-                                homeController.onlineMembers.getItems().addAll(matcher.group(1).split(","));
-                                homeController.onlineMembers.setVisible(true);
-                            });
-                        }
-                    } else {
-                        Platform.runLater(() -> homeController.receivedMessageDisplay(receivedMessage));
-                        AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("src/main/resources/com/example/chatroom/sounds/notification_sound.wav").getAbsoluteFile());
-                        Clip clip = AudioSystem.getClip();
-                        clip.open(audioInputStream);
-                        clip.start();
-                    }
+                    decipherTheMessage(receivedMessage);
                 } catch (Exception e) {
                     break;
                 }
@@ -129,6 +92,51 @@ public class Client extends HomeController {
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    public void decipherTheMessage(String message) {
+        if (message.startsWith("#encryptedMessage#: #clientConnected#:")) {
+            Pattern pattern = Pattern.compile(":\\s*([^:]+)$");
+            Matcher matcher = pattern.matcher(message);
+            if (matcher.find()) {
+                Platform.runLater(() -> homeController.userConnectDisconnectDisplay(matcher.group(1)));
+            } else {
+                Platform.runLater(() -> homeController.userConnectDisconnectDisplay("User connected"));
+            }
+
+        } else if (message.startsWith("#encryptedMessage#: #clientDisconnected#:")) {
+            Pattern pattern = Pattern.compile("\\s*(\\w+)$");
+            Matcher matcher = pattern.matcher(message);
+            if (matcher.find()) {
+                Platform.runLater(() -> homeController.userConnectDisconnectDisplay(matcher.group(1) + " disconnected"));
+            }
+        } else if (message.startsWith("#encryptedMessage#: #countOfOnlineMembers#:")) {
+            Pattern pattern = Pattern.compile(":\\s*(\\d+)$");
+            Matcher matcher = pattern.matcher(message);
+            if (matcher.find()) {
+                Platform.runLater(() -> homeController.onlineStatus.setText(matcher.group(1)));
+            }
+        } else if (message.startsWith("#encryptedMessage#:")) {
+            Pattern pattern = Pattern.compile("\\[([^\\]]+)\\]");
+            Matcher matcher = pattern.matcher(message);
+            if (matcher.find()) {
+                Platform.runLater(() -> {
+                    homeController.onlineMembers.getItems().clear();
+                    homeController.onlineMembers.getItems().addAll(matcher.group(1).split(","));
+                    homeController.onlineMembers.setVisible(true);
+                });
+            }
+        } else {
+            Platform.runLater(() -> homeController.receivedMessageDisplay(message));
+            try {
+                AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File("src/main/resources/com/example/chatroom/sounds/notification_sound.wav").getAbsoluteFile());
+                Clip clip = AudioSystem.getClip();
+                clip.open(audioInputStream);
+                clip.start();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
