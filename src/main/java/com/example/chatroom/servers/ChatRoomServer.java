@@ -73,46 +73,7 @@ public class ChatRoomServer extends ServerController {
             sendMessageToAllExceptSender("#encryptedMessage#: #clientConnected#:", socket);
             while (true) {
                 String message = dataInputStream.readUTF();
-                if (message.contains("#encryptedMessage#: #privateMessage#:")) {
-                    Pattern pattern = Pattern.compile("(\\w+):");
-                    Matcher matcher = pattern.matcher(message);
-                    String sender = null;
-                    String receiver = null;
-                    String sentMessage = null;
-                    if (matcher.find()) {
-                        sender = matcher.group(1);
-                        if (matcher.find()) {
-                            receiver = matcher.group(1);
-                        }
-                    }
-                    pattern = Pattern.compile("#privateMessage#: (.+)");
-                    matcher = pattern.matcher(message);
-                    if (matcher.find()) {
-                        sentMessage = matcher.group(1);
-                    }
-                    dataOutputStream = new DataOutputStream(onlineMembers.get(receiver).getOutputStream());
-                    dataOutputStream.writeUTF(sender + ": " + sentMessage);
-                    dataOutputStream.flush();
-                } else if (message.endsWith("#getAllOnlineMembers#")) {
-                    dataOutputStream = new DataOutputStream(socket.getOutputStream());
-                    dataOutputStream.writeUTF("#encryptedMessage#: #getAllOnlineMembers#: " + onlineMembersUsernames);
-                } else if (message.contains("#encryptedMessage#: #deleteMember#:")) {
-                    Pattern pattern = Pattern.compile(":\\s*(\\w+)$");
-                    Matcher matcher = pattern.matcher(message);
-                    if (matcher.find()) {
-                        onlineMembersUsernames.remove(matcher.group(1));
-                        onlineMembers.remove(matcher.group(1));
-                    }
-                } else if (message.matches(".*:\\s*(\\w+).*") && message.startsWith("#encryptedMessage#: #addUsername#:")) {
-                    Pattern pattern = Pattern.compile("(.*:\\s*(\\w+).*)");
-                    Matcher matcher = pattern.matcher(message);
-                    if (matcher.find()) {
-                        onlineMembers.put(matcher.group(2), socket);
-                        onlineMembersUsernames.add(matcher.group(2));
-                    }
-                } else {
-                    sendMessageToAllExceptSender(message, socket);
-                }
+                decipherTheMessage(message, socket);
             }
         } catch (IOException e) {
             Platform.runLater(() -> serverController.addNotificationText("Client disconnected: " + socket));
@@ -136,6 +97,50 @@ public class ChatRoomServer extends ServerController {
                 ex.printStackTrace();
             }
             outputStreams.removeIf(outputStream -> outputStream.equals(socket));
+        }
+    }
+
+    private void decipherTheMessage(String message, Socket socket) throws IOException {
+        DataOutputStream dataOutputStream;
+        if (message.contains("#encryptedMessage#: #privateMessage#:")) {
+            Pattern pattern = Pattern.compile("(\\w+):");
+            Matcher matcher = pattern.matcher(message);
+            String sender = null;
+            String receiver = null;
+            String sentMessage = null;
+            if (matcher.find()) {
+                sender = matcher.group(1);
+                if (matcher.find()) {
+                    receiver = matcher.group(1);
+                }
+            }
+            pattern = Pattern.compile("#privateMessage#: (.+)");
+            matcher = pattern.matcher(message);
+            if (matcher.find()) {
+                sentMessage = matcher.group(1);
+            }
+            dataOutputStream = new DataOutputStream(onlineMembers.get(receiver).getOutputStream());
+            dataOutputStream.writeUTF(sender + ": " + sentMessage);
+            dataOutputStream.flush();
+        } else if (message.endsWith("#getAllOnlineMembers#")) {
+            dataOutputStream = new DataOutputStream(socket.getOutputStream());
+            dataOutputStream.writeUTF("#encryptedMessage#: #getAllOnlineMembers#: " + onlineMembersUsernames);
+        } else if (message.contains("#encryptedMessage#: #deleteMember#:")) {
+            Pattern pattern = Pattern.compile(":\\s*(\\w+)$");
+            Matcher matcher = pattern.matcher(message);
+            if (matcher.find()) {
+                onlineMembersUsernames.remove(matcher.group(1));
+                onlineMembers.remove(matcher.group(1));
+            }
+        } else if (message.matches(".*:\\s*(\\w+).*") && message.startsWith("#encryptedMessage#: #addUsername#:")) {
+            Pattern pattern = Pattern.compile("(.*:\\s*(\\w+).*)");
+            Matcher matcher = pattern.matcher(message);
+            if (matcher.find()) {
+                onlineMembers.put(matcher.group(2), socket);
+                onlineMembersUsernames.add(matcher.group(2));
+            }
+        } else {
+            sendMessageToAllExceptSender(message, socket);
         }
     }
 

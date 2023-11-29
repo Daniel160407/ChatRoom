@@ -95,7 +95,7 @@ public class Client extends HomeController {
         }
     }
 
-    public void decipherTheMessage(String message) {
+    private void decipherTheMessage(String message) {
         if (message.startsWith("#encryptedMessage#: #clientConnected#:")) {
             Pattern pattern = Pattern.compile(":\\s*([^:]+)$");
             Matcher matcher = pattern.matcher(message);
