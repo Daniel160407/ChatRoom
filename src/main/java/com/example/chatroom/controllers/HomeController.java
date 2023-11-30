@@ -118,7 +118,6 @@ public class HomeController {
     @FXML
     private void onDisconnectButtonAction() throws IOException {
         connectController.client.threadKiller = true;
-        connectController.exitRequest();
         connectController.client.getSocket().close();
         textField.getScene().getWindow().hide();
         FXMLLoader fxmlLoader = new FXMLLoader(ChatRoomMain.class.getResource("fxml files/connect.fxml"));
